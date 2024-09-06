@@ -3,43 +3,28 @@ package Test;
 public class A5 {
 
 	public static void main(String[] args) {
-        double expectedValue = calculateExpectedValue();
-        System.out.printf("Expected number of times: %.6f%n", expectedValue);
+        int n = 46288; // Example number
+        int p = 3;   // Starting power
+        int result = findK(n, p);
+        System.out.println("Result: " + result);
     }
 
-    public static double calculateExpectedValue() {
-        // Initial state: 1 A1 sheet
-        int[] initialState = {1, 0, 0, 0, 0}; // A1, A2, A3, A4, A5
-        return calculateExpectedValue(initialState, 0);
-    }
+    public static int findK(int n, int p) {
+        String numStr = Integer.toString(n);
+        int sum = 0;
 
-    public static double calculateExpectedValue(int[] state, int depth) {
-        // If we have reached the 15th batch (excluding the first and last), return 0
-        if (depth == 15) {
-            return 0;
+        // Calculate the sum of digits raised to consecutive powers
+        for (int i = 0; i < numStr.length(); i++) {
+            int digit = Character.getNumericValue(numStr.charAt(i));
+            sum += Math.pow(digit, p + i);
         }
 
-        // Check if there's exactly one sheet in the envelope
-        int sheetCount = 0;
-        for (int count : state) {
-            sheetCount += count;
+        // Check if the sum is divisible by n
+        if (sum % n == 0) {
+            return sum / n;
+        } else {
+            return -1;
         }
-        double singleSheetProbability = (sheetCount == 1) ? 1.0 : 0.0;
-
-        // Calculate the expected value for the next state
-        double expectedValue = singleSheetProbability;
-        for (int i = 0; i < 5; i++) {
-            if (state[i] > 0) {
-                int[] newState = state.clone();
-                newState[i]--;
-                for (int j = i + 1; j < 5; j++) {
-                    newState[j]++;
-                }
-                expectedValue += (state[i] / (double) sheetCount) * calculateExpectedValue(newState, depth + 1);
-            }
-        }
-
-        return expectedValue;
-    }
+    }																																																																																																																																																				
 
 }
